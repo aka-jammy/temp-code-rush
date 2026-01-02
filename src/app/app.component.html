@@ -1,0 +1,516 @@
+<div class="min-h-screen bg-black text-zinc-200 font-sans selection:bg-violet-500/30 relative">
+  
+  <!-- Subtle Grid Background -->
+  <div class="fixed inset-0 z-0 pointer-events-none">
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+    <div class="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-violet-500 opacity-20 blur-[100px]"></div>
+  </div>
+
+  <!-- Content Layer -->
+  <div class="relative z-10">
+    
+    <!-- Navigation Bar -->
+    <nav class="border-b border-white/10 bg-black/80 backdrop-blur-xl sticky top-0 z-50 transition-all duration-300">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3 cursor-pointer group" (click)="reset()">
+          <div class="relative w-8 h-8 sm:w-9 sm:h-9">
+             <div class="relative w-full h-full rounded-lg bg-white flex items-center justify-center text-black border border-zinc-200 shadow-[0_0_15px_rgba(255,255,255,0.3)] group-hover:scale-105 transition-transform">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+             </div>
+          </div>
+          <span class="text-lg sm:text-xl font-bold text-white tracking-tight group-hover:text-zinc-300 transition-colors">
+            Career<span class="text-zinc-500">Forge</span>
+          </span>
+        </div>
+        
+        <div class="flex items-center gap-3">
+          <!-- Info Button -->
+          <button (click)="toggleInfo()" class="p-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/5 transition-colors" title="Tech Stack & Roadmap">
+             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </button>
+
+          @if (roadmapData()) {
+            <button (click)="reset()" class="text-xs sm:text-sm font-bold text-zinc-400 hover:text-white transition-all flex items-center gap-2 border border-zinc-800 hover:border-zinc-600 bg-zinc-900/50 hover:bg-zinc-800 px-4 py-2 rounded-full backdrop-blur-sm">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+              </svg>
+              <span class="hidden sm:inline">New Strategy</span>
+              <span class="sm:hidden">Reset</span>
+            </button>
+          }
+        </div>
+      </div>
+    </nav>
+
+    <!-- LOADING STATE -->
+    @if (isLoading()) {
+      <div class="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] p-8">
+        <div class="relative w-24 h-24 mb-10">
+           <div class="absolute inset-0 bg-white/10 rounded-full animate-pulse"></div>
+           <div class="absolute inset-0 border-t-2 border-white rounded-full animate-spin"></div>
+        </div>
+        <h2 class="text-2xl sm:text-4xl font-bold text-white mb-3 tracking-tight">Constructing Model</h2>
+        <div class="flex flex-col items-center gap-2 text-zinc-500 font-medium text-center">
+           <p class="animate-pulse text-sm font-mono">Calibrating global data for {{ careerForm.value.location }}...</p>
+        </div>
+      </div>
+    }
+
+    <!-- LANDING STATE -->
+    @if (!roadmapData() && !isLoading()) {
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-24 animate-[fadeIn_0.8s_ease-out]">
+        <div class="max-w-3xl mx-auto">
+          <div class="text-center mb-10 sm:mb-16 relative">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-zinc-300 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest mb-6 sm:mb-8 hover:bg-white/10 transition-colors cursor-default backdrop-blur-md">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-violet-500"></span>
+              </span>
+              AI-Powered Career Intelligence
+            </div>
+            <h1 class="text-4xl sm:text-6xl md:text-7xl font-bold text-white mb-6 tracking-tight leading-tight">
+              Design Your <br>
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-white animate-gradient">Future Self</span>
+            </h1>
+            <p class="text-base sm:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed px-4 sm:px-0 font-light">
+              Generate a data-backed career roadmap with localized salary insights, growth timelines, and high-probability interview topics.
+            </p>
+          </div>
+
+          <!-- Error Alert Banner -->
+          @if (error()) {
+            <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-8 flex items-start gap-4 animate-[fadeIn_0.3s_ease-out]">
+              <div class="p-2 bg-red-500/10 rounded-lg shrink-0">
+                <svg class="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-sm font-bold text-red-400 mb-1">Analysis Failed</h3>
+                <p class="text-sm text-red-200/80 leading-relaxed">{{ error() }}</p>
+              </div>
+            </div>
+          }
+
+          <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-3xl p-1 shadow-2xl ring-1 ring-white/5 transition-all duration-500">
+            <form [formGroup]="careerForm" (ngSubmit)="generate()" class="p-6 sm:p-8 md:p-10 space-y-6">
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                <!-- Role -->
+                <div class="space-y-2 group">
+                  <label class="text-xs font-bold text-zinc-500 uppercase tracking-wider group-focus-within:text-white transition-colors ml-1">Target Role</label>
+                  <div class="relative transform group-focus-within:-translate-y-1 transition-transform duration-300">
+                    <input 
+                      formControlName="role"
+                      type="text" 
+                      placeholder="e.g. Senior Machine Learning Engineer"
+                      class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-4 text-white focus:border-white focus:ring-1 focus:ring-white transition-all outline-none pl-11 shadow-inner text-base sm:text-lg placeholder:text-zinc-600 backdrop-blur-sm"
+                    >
+                    <svg class="w-5 h-5 text-zinc-500 absolute left-4 top-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <!-- Location -->
+                <div class="space-y-2 group">
+                  <label class="text-xs font-bold text-zinc-500 uppercase tracking-wider group-focus-within:text-white transition-colors ml-1">Location</label>
+                   <div class="relative transform group-focus-within:-translate-y-1 transition-transform duration-300">
+                    <input 
+                      formControlName="location"
+                      type="text" 
+                      placeholder="e.g. London, United Kingdom"
+                      class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-4 text-white focus:border-white focus:ring-1 focus:ring-white transition-all outline-none pl-11 shadow-inner text-base sm:text-lg placeholder:text-zinc-600 backdrop-blur-sm"
+                    >
+                     <svg class="w-5 h-5 text-zinc-500 absolute left-4 top-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                <!-- Level -->
+                <div class="space-y-2 group">
+                  <label class="text-xs font-bold text-zinc-500 uppercase tracking-wider group-focus-within:text-white transition-colors ml-1">Current Level</label>
+                  <div class="relative transform group-focus-within:-translate-y-1 transition-transform duration-300">
+                    <select 
+                      formControlName="level"
+                      class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-4 text-white focus:border-white focus:ring-1 focus:ring-white transition-all outline-none appearance-none pl-5 text-base shadow-inner backdrop-blur-sm"
+                    >
+                      <option>Student / New Grad</option>
+                      <option>1-3 Years (Junior)</option>
+                      <option>3-5 Years (Mid-Level)</option>
+                      <option>5-8 Years (Senior)</option>
+                      <option>8+ Years (Lead/Staff)</option>
+                      <option>Executive / Director</option>
+                    </select>
+                    <svg class="w-4 h-4 text-zinc-500 absolute right-4 top-[22px] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Difficulty -->
+                <div class="space-y-2 group">
+                  <label class="text-xs font-bold text-zinc-500 uppercase tracking-wider group-focus-within:text-white transition-colors ml-1">Roadmap Depth</label>
+                  <div class="relative transform group-focus-within:-translate-y-1 transition-transform duration-300">
+                    <select 
+                      formControlName="difficulty"
+                      class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-4 text-white focus:border-white focus:ring-1 focus:ring-white transition-all outline-none appearance-none pl-5 text-base shadow-inner backdrop-blur-sm"
+                    >
+                      <option value="Beginner">Beginner (Fundamentals)</option>
+                      <option value="Intermediate">Intermediate (Standard)</option>
+                      <option value="Advanced">Advanced (Expert)</option>
+                    </select>
+                    <svg class="w-4 h-4 text-zinc-500 absolute right-4 top-[22px] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+
+                 <!-- Goal -->
+                 <div class="space-y-2 group">
+                  <label class="text-xs font-bold text-zinc-500 uppercase tracking-wider group-focus-within:text-white transition-colors ml-1">Primary Goal</label>
+                   <div class="relative transform group-focus-within:-translate-y-1 transition-transform duration-300">
+                    <input 
+                      formControlName="goal"
+                      type="text" 
+                      placeholder="e.g. Salary Increase, Remote Work"
+                      class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-4 text-white focus:border-white focus:ring-1 focus:ring-white transition-all outline-none pl-5 shadow-inner text-base placeholder:text-zinc-600 backdrop-blur-sm"
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-4">
+                <button 
+                  type="submit" 
+                  [disabled]="careerForm.invalid"
+                  class="w-full bg-white text-black font-bold py-4 sm:py-5 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-base sm:text-lg flex items-center justify-center gap-2 transform active:scale-[0.99] border border-transparent hover:bg-zinc-100 group overflow-hidden relative"
+                >
+                  <span class="relative z-10 flex items-center gap-2">
+                    Generate Strategy
+                    <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- DASHBOARD STATE (Results) -->
+    @if (roadmapData() && !isLoading()) {
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 animate-[slideUp_0.8s_cubic-bezier(0.16,1,0.3,1)]">
+        
+        <!-- Dashboard Header -->
+        <div class="bg-zinc-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-6 sm:p-8 mb-8 shadow-2xl relative overflow-hidden group">
+           
+           <div class="relative z-10 grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
+              <!-- Left: Title & Summary -->
+              <div class="xl:col-span-2 space-y-6">
+                 <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                   <div class="w-14 h-14 rounded-2xl bg-white text-black flex items-center justify-center font-bold text-2xl shadow-lg border border-zinc-200 shrink-0">
+                     {{ careerForm.value.role.charAt(0) }}
+                   </div>
+                   <div>
+                     <h1 class="text-2xl sm:text-4xl font-bold text-white tracking-tight leading-tight">{{ careerForm.value.role }}</h1>
+                     <div class="flex flex-wrap items-center gap-2 mt-2">
+                        <span class="px-2 py-0.5 rounded text-xs font-bold bg-zinc-800 text-zinc-300 border border-zinc-700 flex items-center gap-1 uppercase tracking-wide">
+                          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                          {{ careerForm.value.location }}
+                        </span>
+                        <span class="w-1 h-1 rounded-full bg-zinc-600"></span>
+                        <span class="text-violet-400 text-sm font-bold uppercase tracking-wide">{{ careerForm.value.level }}</span>
+                     </div>
+                   </div>
+                 </div>
+                 
+                 <div class="bg-black/50 border border-white/5 rounded-xl p-5 backdrop-blur-sm relative flex flex-col h-full max-h-[220px]">
+                   <div class="absolute -left-0.5 top-5 bottom-5 w-1 bg-violet-500 rounded-full"></div>
+                   <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2 pl-4 flex-shrink-0">Executive Summary</h3>
+                   <div class="overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent">
+                     <p class="text-zinc-200 text-sm sm:text-base leading-relaxed pl-4">{{ roadmapData().roleSummary }}</p>
+                   </div>
+                 </div>
+              </div>
+              
+              <!-- Right: Key Metrics -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-4 h-full">
+                 <div class="bg-black/50 border border-zinc-800 rounded-xl p-5 flex flex-col items-center justify-center text-center hover:border-violet-500/50 transition-all group/card">
+                    <span class="text-xs text-zinc-500 uppercase tracking-widest font-bold mb-1 group-hover/card:text-violet-400 transition-colors">Market Outlook</span>
+                    <span class="text-lg font-bold text-white">{{ roadmapData().marketOutlook }}</span>
+                 </div>
+                 <div class="bg-zinc-900 border border-emerald-500/20 rounded-xl p-5 flex flex-col items-center justify-center text-center relative overflow-hidden group/salary">
+                    <span class="text-xs text-emerald-400 uppercase tracking-widest font-bold mb-1 relative z-10">Salary Range</span>
+                    <span class="text-xl sm:text-2xl font-bold text-white relative z-10">{{ roadmapData().salaryRange }}</span>
+                 </div>
+              </div>
+           </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div id="main-content" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          <!-- Sidebar Navigation -->
+          <div class="lg:col-span-3">
+            <div class="sticky top-24 space-y-2 flex flex-row lg:flex-col overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 gap-2 lg:gap-0 scrollbar-hide">
+              <button 
+                (click)="setTab('roadmap')"
+                class="w-full text-left px-5 py-4 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-3 border group backdrop-blur-sm whitespace-nowrap lg:whitespace-normal flex-shrink-0"
+                [class]="activeTab() === 'roadmap' ? 'bg-white text-black shadow-lg ring-1 ring-white' : 'bg-zinc-900/40 text-zinc-500 border-transparent hover:bg-zinc-800 hover:text-white'"
+              >
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                Strategic Roadmap
+              </button>
+              <button 
+                (click)="setTab('market')"
+                class="w-full text-left px-5 py-4 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-3 border group backdrop-blur-sm whitespace-nowrap lg:whitespace-normal flex-shrink-0"
+                [class]="activeTab() === 'market' ? 'bg-white text-black shadow-lg ring-1 ring-white' : 'bg-zinc-900/40 text-zinc-500 border-transparent hover:bg-zinc-800 hover:text-white'"
+              >
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                Market Intelligence
+              </button>
+              <button 
+                (click)="setTab('radar')"
+                class="w-full text-left px-5 py-4 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-3 border group backdrop-blur-sm whitespace-nowrap lg:whitespace-normal flex-shrink-0"
+                [class]="activeTab() === 'radar' ? 'bg-white text-black shadow-lg ring-1 ring-white' : 'bg-zinc-900/40 text-zinc-500 border-transparent hover:bg-zinc-800 hover:text-white'"
+              >
+                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                 Market Radar
+              </button>
+              <button 
+                (click)="setTab('positioning')"
+                class="w-full text-left px-5 py-4 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-3 border group backdrop-blur-sm whitespace-nowrap lg:whitespace-normal flex-shrink-0"
+                [class]="activeTab() === 'positioning' ? 'bg-white text-black shadow-lg ring-1 ring-white' : 'bg-zinc-900/40 text-zinc-500 border-transparent hover:bg-zinc-800 hover:text-white'"
+              >
+                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                 Check Where You Stand
+              </button>
+              <button 
+                (click)="setTab('interview')"
+                class="w-full text-left px-5 py-4 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-3 border group backdrop-blur-sm whitespace-nowrap lg:whitespace-normal flex-shrink-0"
+                [class]="activeTab() === 'interview' ? 'bg-white text-black shadow-lg ring-1 ring-white' : 'bg-zinc-900/40 text-zinc-500 border-transparent hover:bg-zinc-800 hover:text-white'"
+              >
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+                Interview Prep
+              </button>
+              
+               @if (roadmapSources().length > 0) {
+                <div class="hidden lg:block mt-8 pt-6 border-t border-zinc-800">
+                  <p class="text-[10px] text-zinc-500 mb-3 uppercase tracking-wider font-bold pl-1">Data verified from</p>
+                  <div class="flex flex-col gap-2">
+                    @for (source of roadmapSources(); track $index) {
+                      <a [href]="source.web.uri" target="_blank" class="text-xs text-zinc-400 hover:text-white truncate block opacity-70 hover:opacity-100 bg-zinc-900 px-3 py-2 rounded border border-zinc-800 hover:border-zinc-600 transition-all duration-200">
+                        {{ source.web.title }}
+                      </a>
+                    }
+                  </div>
+                </div>
+               }
+            </div>
+          </div>
+
+          <!-- Main Content Area -->
+          <div class="lg:col-span-9 space-y-6">
+            @if (activeTab() === 'roadmap') {
+              <div class="animate-[fadeIn_0.4s_cubic-bezier(0.16,1,0.3,1)]">
+                 <app-roadmap-display [roadmap]="roadmapData()"></app-roadmap-display>
+              </div>
+            }
+            @if (activeTab() === 'market') {
+              <div class="space-y-6 animate-[fadeIn_0.4s_cubic-bezier(0.16,1,0.3,1)]">
+                <app-salary-chart 
+                  [data]="roadmapData().salaryTrends || []"
+                  [currencySymbol]="roadmapData().currency?.symbol || '$'"
+                  [currencyCode]="roadmapData().currency?.code || 'USD'">
+                </app-salary-chart>
+                <app-tech-hubs [data]="insightsData()" [isLoading]="isInsightsLoading()"></app-tech-hubs>
+              </div>
+            }
+            @if (activeTab() === 'radar') {
+              <div class="animate-[fadeIn_0.4s_cubic-bezier(0.16,1,0.3,1)]">
+                <app-market-radar 
+                   [data]="roadmapData().trendComparison"
+                   [location]="careerForm.value.location">
+                </app-market-radar>
+              </div>
+            }
+            @if (activeTab() === 'positioning') {
+               <div class="animate-[fadeIn_0.4s_cubic-bezier(0.16,1,0.3,1)]">
+                 <app-positioning 
+                   [role]="careerForm.value.role" 
+                   [location]="careerForm.value.location"
+                   [level]="careerForm.value.level"
+                   [goal]="careerForm.value.goal">
+                 </app-positioning>
+               </div>
+            }
+            @if (activeTab() === 'interview') {
+              <div class="animate-[fadeIn_0.4s_cubic-bezier(0.16,1,0.3,1)]">
+                <app-interview-prep 
+                  [role]="careerForm.value.role" 
+                  [hotTopics]="roadmapData().hotTopics || []">
+                </app-interview-prep>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Feedback Button -->
+  <button 
+    (click)="toggleFeedback()"
+    class="fixed bottom-6 right-6 bg-white text-black p-3 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-110 transition-transform z-50 group border-2 border-transparent hover:border-violet-500">
+    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+    </svg>
+    <span class="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-zinc-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Give Feedback</span>
+  </button>
+
+  <!-- Feedback Modal Overlay -->
+  @if (showFeedback()) {
+    <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-[fadeIn_0.2s_ease-out]">
+      <!-- Backdrop -->
+      <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" (click)="toggleFeedback()"></div>
+      
+      <!-- Modal -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-sm p-6 relative shadow-2xl animate-[slideUp_0.3s_cubic-bezier(0.16,1,0.3,1)]">
+        <button (click)="toggleFeedback()" class="absolute top-4 right-4 text-zinc-500 hover:text-white">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+
+        @if (!feedbackSent()) {
+          <h3 class="text-lg font-bold text-white mb-2">Report an Issue</h3>
+          <p class="text-sm text-zinc-400 mb-4">Help us improve the AI Career Pathfinder.</p>
+          <form (submit)="submitFeedback($event)">
+            <textarea placeholder="Describe the issue or suggestion..." class="w-full bg-black/50 border border-zinc-800 rounded-xl p-3 text-sm text-white focus:border-violet-500 outline-none resize-none mb-4 h-32" required></textarea>
+            <div class="flex justify-end gap-2">
+              <button type="button" (click)="toggleFeedback()" class="px-4 py-2 text-xs font-bold text-zinc-400 hover:text-white">Cancel</button>
+              <button type="submit" class="px-4 py-2 text-xs font-bold bg-white text-black rounded-lg hover:bg-zinc-200">Submit</button>
+            </div>
+          </form>
+        } @else {
+          <div class="text-center py-8">
+            <div class="w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500">
+               <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            </div>
+            <h3 class="text-lg font-bold text-white">Thank You!</h3>
+            <p class="text-sm text-zinc-400 mt-1">Your feedback helps us evolve.</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- INFO MODAL -->
+  @if (showInfo()) {
+    <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-[fadeIn_0.2s_ease-out]">
+      <!-- Backdrop -->
+      <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" (click)="toggleInfo()"></div>
+      
+      <!-- Modal -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-2xl p-0 relative shadow-2xl animate-[slideUp_0.3s_cubic-bezier(0.16,1,0.3,1)] overflow-hidden">
+        
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-violet-900/40 to-black p-6 border-b border-zinc-800 flex justify-between items-start">
+           <div>
+              <h3 class="text-xl font-bold text-white mb-1">Under the Hood</h3>
+              <p class="text-sm text-zinc-400">Powered by Google AI & Modern Angular</p>
+           </div>
+           <button (click)="toggleInfo()" class="text-zinc-500 hover:text-white transition-colors">
+             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+           </button>
+        </div>
+        
+        <div class="p-6 space-y-8 max-h-[70vh] overflow-y-auto">
+          
+          <!-- Tech Stack -->
+          <div>
+             <h4 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Google Technologies</h4>
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center gap-3">
+                   <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
+                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                   </div>
+                   <div>
+                      <div class="text-sm font-bold text-white">Gemini 2.5 Flash</div>
+                      <div class="text-[10px] text-zinc-500">Fast, Cost-Effective Reasoning</div>
+                   </div>
+                </div>
+                <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center gap-3">
+                   <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400">
+                      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                   </div>
+                   <div>
+                      <div class="text-sm font-bold text-white">Angular v21</div>
+                      <div class="text-[10px] text-zinc-500">Zoneless + Signals Architecture</div>
+                   </div>
+                </div>
+                 <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center gap-3">
+                   <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                   </div>
+                   <div>
+                      <div class="text-sm font-bold text-white">Search Grounding</div>
+                      <div class="text-[10px] text-zinc-500">Real-Time Data Verification</div>
+                   </div>
+                </div>
+                <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center gap-3">
+                   <div class="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center text-violet-400">
+                      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                   </div>
+                   <div>
+                      <div class="text-sm font-bold text-white">Thinking Config</div>
+                      <div class="text-[10px] text-zinc-500">Deep Reasoning for Interviews</div>
+                   </div>
+                </div>
+             </div>
+          </div>
+
+          <!-- Roadmap -->
+          <div>
+            <h4 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Future Development Roadmap</h4>
+            <div class="space-y-3">
+               <div class="flex items-start gap-3">
+                  <span class="flex-shrink-0 w-6 h-6 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-white border border-zinc-700">1</span>
+                  <p class="text-sm text-zinc-300"><strong class="text-white">Multimodal Voice Practice:</strong> Real-time voice mock interviews using Gemini's native audio capabilities to analyze tone and confidence.</p>
+               </div>
+               <div class="flex items-start gap-3">
+                  <span class="flex-shrink-0 w-6 h-6 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-white border border-zinc-700">2</span>
+                  <p class="text-sm text-zinc-300"><strong class="text-white">Resume Parsing:</strong> "Line-by-line" CV optimization against the generated roadmap for ATS compliance.</p>
+               </div>
+               <div class="flex items-start gap-3">
+                  <span class="flex-shrink-0 w-6 h-6 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-white border border-zinc-700">3</span>
+                  <p class="text-sm text-zinc-300"><strong class="text-white">Live Job Feed:</strong> Integration with Google Jobs API for "One-Click" outreach to identified companies.</p>
+               </div>
+               <div class="flex items-start gap-3">
+                  <span class="flex-shrink-0 w-6 h-6 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-white border border-zinc-700">4</span>
+                  <p class="text-sm text-zinc-300"><strong class="text-white">Gamified Progression:</strong> Converting the static roadmap into an interactive, stateful checklist with badges.</p>
+               </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  }
+  
+  <style>
+    @keyframes slideUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+    .animate-gradient { background-size: 200% auto; animation: gradient 4s linear infinite; }
+    @keyframes gradient { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</div>
